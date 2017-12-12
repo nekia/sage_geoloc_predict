@@ -1,4 +1,4 @@
 ---
 applications:
-- name: my-app
+- name: sage-app
   command: python query.py

@@ -17,7 +17,8 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 session = Session(aws_access_key_id='****************',
                   aws_secret_access_key='****************')
 
-sagemaker = boto3.client('runtime.sagemaker')
+sagemaker = boto3.client('runtime.sagemaker', aws_access_key_id='*************',
+                  aws_secret_access_key='***************', region_name='us-east-1')
 
 app = Flask(__name__, template_folder=".")
 app.config.from_object(__name__)
@@ -101,4 +102,4 @@ def show_index():
 #     return response
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=8080)
