@@ -1,6 +1,10 @@
 from flask import Flask, request, url_for, render_template, make_response, jsonify
 import os
 import requests
+import boto3
+import json
+from boto3.session import Session
+
 # import ipdb
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import Map
@@ -9,6 +13,11 @@ DEBUG = True
 SECRET_KEY = 'development key'
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+session = Session(aws_access_key_id='****************',
+                  aws_secret_access_key='****************')
+
+sagemaker = boto3.client('runtime.sagemaker')
 
 app = Flask(__name__, template_folder=".")
 app.config.from_object(__name__)
@@ -20,12 +29,24 @@ def request_predict():
     print(request.form['url'])
     # return render_template('query.html', title='flask test', url=request.form['city1'])
     # return "The cities are: {}, {}, {}".format(request.form['city1'], request.form['city2'], request.form['city3'])
-    r = requests.post('http://172.17.0.2:8080/invocations', json = { 'url':request.form['url'] })
+
+    # r = requests.post('http://172.17.0.2:8080/invocations', json = { 'url':request.form['url'] })
+
+    data = {'url': request.form['url'] }
+    res_invoke = sagemaker.invoke_endpoint(
+        EndpointName='predict',
+        Body=json.dumps(data)
+    )
+    streamingBody = res_invoke['Body'] 
+    r = json.loads(streamingBody.read())
+
     print(r)
+
     # ipdb.set_trace()
     # r.json()
-    result = r.json()[0:3]
-    response = jsonify(r.json()[0:3])
+    result = r[0:3]
+    print(result)
+    response = jsonify(result)
     response.status_code = 200
     mymap = Map(
         identifier="view-side",

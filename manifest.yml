@@ -1,0 +1,4 @@
+---
+applications:
+- name: my-app
+  command: python query.py
