@@ -22,7 +22,7 @@ sagemaker = boto3.client('runtime.sagemaker', aws_access_key_id='*************',
 
 app = Flask(__name__, template_folder=".")
 app.config.from_object(__name__)
-app.config['GOOGLEMAPS_KEY'] = "AIzaSyC7wkldmBPYef_tBhIQgkMujph7jBQSj-8"
+app.config['GOOGLEMAPS_KEY'] = "****************"
 GoogleMaps(app)
 
 @app.route('/query', methods=['POST'])
@@ -31,7 +31,7 @@ def request_predict():
     # return render_template('query.html', title='flask test', url=request.form['city1'])
     # return "The cities are: {}, {}, {}".format(request.form['city1'], request.form['city2'], request.form['city3'])
 
-    # r = requests.post('http://172.17.0.2:8080/invocations', json = { 'url':request.form['url'] })
+    # r = requests.post('http://172.17.0.2:8080/invocations', json = { 'url':request.form['url'] }).json()
 
     data = {'url': request.form['url'] }
     res_invoke = sagemaker.invoke_endpoint(
